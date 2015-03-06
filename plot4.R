@@ -6,7 +6,7 @@ temp <- tempfile()
 download.file('https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip',
               destfile = temp)
 
-data <- read.table(unz(temp, 'household_power_consumption.txt'), 
+data <- read.table(unz(temp, 'household_power_consumption.txt'),
                    skip = 66637, nrow = 2880, sep =  ';')
 
 unlink(temp)
@@ -20,9 +20,29 @@ data$datetime <- strptime(data$datetime, format = '%d/%m/%Y %H:%M:%S')
 
 Sys.setlocale("LC_TIME", "English")
 
-png(filename = 'plot2.png', width = 480, height = 480)
+png(filename = 'plot4.png', width = 480, height = 480)
+
+par(mfrow = c(2,2))
+par(cex = 0.7)
 
 plot(data$datetime, data$Global_active_power, type = 'l', 
-     ylab = 'Global Active Power (kilowatts)',
+     ylab = 'Global Active Power',
      xlab = '')
+
+plot(data$datetime, data$Voltage, type = 'l', ylab = 'Voltage', 
+     xlab = 'datetime')
+
+
+plot(data$datetime, data$Sub_metering_1, type = 'l', 
+     ylab = 'Energy sub metering',
+     xlab = '', cex.lab = 0.7, cex.axis = 0.7)
+lines(data$datetime, data$Sub_metering_2, col = 'red')
+lines(data$datetime, data$Sub_metering_3, col = 'blue')
+legend('topright', legend = names(data[,7:9]), 
+       col = c('black', 'red', 'blue'),
+       lty = 1, bty = 'n')
+
+plot(data$datetime, data$Global_reactive_power, type = 'l', 
+     ylab = 'Global_reactive_power', xlab = 'datetime')
+
 dev.off()
